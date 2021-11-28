@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { OverflowMenuProvider } from 'react-navigation-header-buttons';
@@ -13,11 +14,13 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <NavigationContainer>
-        <OverflowMenuProvider spaceAboveMenu={30}>
-          <AppNavigator />
-        </OverflowMenuProvider>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <OverflowMenuProvider spaceAboveMenu={30}>
+            <AppNavigator />
+          </OverflowMenuProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </>
   );
 }

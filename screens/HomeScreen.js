@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  FlatList,
-  SafeAreaView,
-  StyleSheet
-} from 'react-native';
+import { Animated, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ListHeader from '../components/ListHeader';
 import ListItem from '../components/ListItem';
@@ -95,7 +91,10 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView 
+      edges={['bottom', 'left', 'right']}
+      style={styles.container}
+    >
       <FlatList
         data={data}
         ItemSeparatorComponent={ListItemSeparator}
