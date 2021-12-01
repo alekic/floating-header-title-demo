@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, FlatList, StyleSheet } from 'react-native';
+import React from 'react';
+import { FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ListHeader from '../components/ListHeader';
 import ListItem from '../components/ListItem';
 import ListItemSeparator from '../components/ListItemSeparator';
+import withFloatingHeader from '../components/withFloatingHeader';
 
 const data = [
   { id: 1, name: 'Cristiano Ronaldo' },
@@ -34,73 +35,33 @@ const data = [
   { id: 25, name: 'Joshua Kimmich' }
 ];
 
+const FlatListWithFloatingHeader = withFloatingHeader(
+  FlatList,
+  React.forwardRef((props, ref) => (
+    <ListHeader
+      ref={ref}
+      subtitle="Subtitle"
+      title="Home"
+    />
+  ))
+);
+
 const keyExtractor = item => item.id.toString();
 
 const renderItem = ({ item }) => (
   <ListItem title={item.name} />
 );
 
-export default function HomeScreen({ navigation }) {
-  const headerRef = useRef(null);
-  const [listHeaderVisible, setListHeaderVisible] = useState(true);
-  const [headerTitleOpacity] = useState(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.timing(headerTitleOpacity, {
-      duration: 200,
-      toValue: listHeaderVisible ? 0 : 1,
-      useNativeDriver: true
-    }).start();
-  }, [
-    headerTitleOpacity,
-    listHeaderVisible
-  ]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitleStyle: {
-        opacity: headerTitleOpacity.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1]
-        })
-      }
-    });
-  }, [
-    headerTitleOpacity,
-    navigation
-  ]);
-
-  const handleScroll = ({ nativeEvent }) => {
-    const yOffset = nativeEvent.contentOffset.y;
-
-    headerRef.current.measureInWindow((x, y, width, height) => {
-      if (listHeaderVisible && yOffset > height) {
-        setListHeaderVisible(false);
-      } else if (!listHeaderVisible && yOffset <= height) {
-        setListHeaderVisible(true);
-      }
-    });
-  };
-
-  const renderListHeader = () => (
-    <ListHeader
-      ref={headerRef}
-      subtitle="Subtitle"
-      title="Home"
-    />
-  );
-
+export default function HomeScreen() {
   return (
-    <SafeAreaView 
+    <SafeAreaView
       edges={['bottom', 'left', 'right']}
       style={styles.container}
     >
-      <FlatList
+      <FlatListWithFloatingHeader
         data={data}
         ItemSeparatorComponent={ListItemSeparator}
         keyExtractor={keyExtractor}
-        ListHeaderComponent={renderListHeader}
-        onScroll={handleScroll}
         renderItem={renderItem}
       />
     </SafeAreaView>
